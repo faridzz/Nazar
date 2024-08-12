@@ -1,0 +1,28 @@
+spring:
+  aop:
+    proxy-target-class: true  # تنظیمات برای استفاده از CGLIB به‌جای JDK Proxy
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: false  # این را false بگذارید تا SQL نمایش داده نشود
+    open-in-view: false  # برای جلوگیری از مشکلات LazyInitializationException
+    hibernate:
+      ddl-auto: update  # برای به‌روز کردن دیتابیس بر اساس تغییرات Entity ها
+    properties:
+      hibernate:
+        show_sql: false  # این را false بگذارید تا SQL Hibernate در لاگ‌ها نمایش داده نشود
+        format_sql: false  # این را false بگذارید تا SQL ها فرمت نشوند
+
+logging:
+  level:
+    org.hibernate.SQL: warn
+    org.hibernate.type.descriptor.sql.BasicBinder: warn
+
+data:
+  time:
+    region:
+      continent: Asia
+      capital: Tehran
