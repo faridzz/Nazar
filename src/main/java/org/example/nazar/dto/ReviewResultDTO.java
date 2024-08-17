@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class ReviewResultDto {
+public class ReviewResultDTO {
 
     private Long reviewsNumber;
     private int duplicateCount;

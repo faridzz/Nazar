@@ -29,6 +29,11 @@ public class GlobalControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("سایت ورودی تکراری است ");
     }
 
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<String> handleDuplicateUserException() {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("یوزر نیم ورودی تکراری است ");
+    }
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());

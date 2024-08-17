@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class SearchResultExtractor implements ISearchResultExtractor {
+public class MobileSearchResultExtractor implements ISearchResultExtractor {
     @Override
     public List<BaseDTO> extract(String responseBody) {
 

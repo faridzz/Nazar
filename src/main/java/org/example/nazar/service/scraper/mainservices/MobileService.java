@@ -3,7 +3,7 @@ package org.example.nazar.service.scraper.mainservices;
 import lombok.extern.slf4j.Slf4j;
 import org.example.nazar.dto.BaseDTO;
 import org.example.nazar.dto.MobileDTO;
-import org.example.nazar.dto.ReviewResultDto;
+import org.example.nazar.dto.ReviewResultDTO;
 import org.example.nazar.exception.DuplicateHashIdException;
 import org.example.nazar.model.*;
 import org.example.nazar.service.scraper.IAddReviewToDataBase;
@@ -16,11 +16,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -49,7 +47,7 @@ public class MobileService implements IAddReviewToDataBase {
      * @return لیستی از نظرات محصول
      */
     @Override
-    public ReviewResultDto addReviewOneByOne(BaseDTO baseDto, String siteUrl, String typeName) {
+    public ReviewResultDTO addReviewOneByOne(BaseDTO baseDto, String siteUrl, String typeName) {
         List<ProductReview> productReviews = new LinkedList<>();
         MobileDTO mobileDTO = (MobileDTO) baseDto;
         AtomicInteger duplicateCount = new AtomicInteger(0);
@@ -84,7 +82,7 @@ public class MobileService implements IAddReviewToDataBase {
                     }
                 });
 
-        return new ReviewResultDto((long) reviewList.size(), duplicateCount.get());
+        return new ReviewResultDTO((long) reviewList.size(), duplicateCount.get());
 
     }
 
@@ -118,7 +116,7 @@ public class MobileService implements IAddReviewToDataBase {
      * @return لیستی از نظرات محصول
      */
     @Override
-    public ReviewResultDto addReviewAll(BaseDTO baseDto, String siteUrl, String typeName) {
+    public ReviewResultDTO addReviewAll(BaseDTO baseDto, String siteUrl, String typeName) {
         List<ProductReview> productReviews = new LinkedList<>();
         MobileDTO mobileDTO = (MobileDTO) baseDto;
 
@@ -128,7 +126,7 @@ public class MobileService implements IAddReviewToDataBase {
 
         List<Review> reviewList = mobileReviewsScraper.getReviews(mobileFindUrlOfReviews.getUrlOfProduct(mobileDTO).get());
         Long reviewNumber = (long) dataBaseService.addReviews(reviewList, product.getName(), siteUrl).size();
-        return new ReviewResultDto(reviewNumber, 0);
+        return new ReviewResultDTO(reviewNumber, 0);
     }
 
 }

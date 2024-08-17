@@ -5,13 +5,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
-import org.example.nazar.dto.ReviewResultDto;
-import org.example.nazar.model.ProductReview;
+import org.example.nazar.dto.ReviewResultDTO;
 
 import org.example.nazar.util.time.nowtime.CurrentTimeProvider;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Aspect
 @Component
@@ -20,14 +17,14 @@ public class LogAspect {
 
     @Around("execution(* org.example.nazar.service.scraper.IAddReviewToDataBase.*(..))")
     @SuppressWarnings("unchecked")
-    public ReviewResultDto measureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+    public ReviewResultDTO measureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
         CurrentTimeProvider currentTimeProvider = new CurrentTimeProvider();
         String currentDate = currentTimeProvider.get();
-        ReviewResultDto result = null;
+        ReviewResultDTO result = null;
         try {
             // اجرای متد
-            result = (ReviewResultDto) joinPoint.proceed();
+            result = (ReviewResultDTO) joinPoint.proceed();
         } finally {
             double executionTime = System.currentTimeMillis() - start;
 

@@ -5,7 +5,7 @@ import org.example.nazar.dto.AddReviewDTO;
 import org.example.nazar.dto.BaseDTO;
 import org.example.nazar.dto.FullReviewDTO;
 
-import org.example.nazar.dto.ReviewResultDto;
+import org.example.nazar.dto.ReviewResultDTO;
 import org.example.nazar.exception.DuplicateHashIdException;
 import org.example.nazar.model.*;
 import org.example.nazar.service.scraper.mainservices.DataBaseService;
@@ -35,6 +35,11 @@ public class ProductController {
         this.dataBaseService = dataBaseService;
         this.iAddReviewToDataBase = iAddReviewToDataBase;
         this.iSearchResultScarper = iSearchResultScarper;
+    }
+
+    @GetMapping
+    public String test() {
+        return "test";
     }
 
     /**
@@ -134,7 +139,7 @@ public class ProductController {
             Optional<BaseDTO> bestResult = iSearchResultScarper.findBestResult(listOfProductResults);
             if (bestResult.isPresent()) {
                 productNameSearchResult = bestResult.get().getTitle();
-                ReviewResultDto results = iAddReviewToDataBase.addReviewOneByOne(bestResult.get(), addReviewDTO.getSiteUrl(), addReviewDTO.getTypeName());
+                ReviewResultDTO results = iAddReviewToDataBase.addReviewOneByOne(bestResult.get(), addReviewDTO.getSiteUrl(), addReviewDTO.getTypeName());
 
                 return results == null ? ResponseEntity.notFound().build() :
                         ResponseEntity.ok().body(
