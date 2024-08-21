@@ -22,6 +22,9 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: warn
 
 data:
+  security:
+    jwt:
+      secretKey: jhfy4ifyy47hf487hiduy84ygd74gfubudgu74t4774
   time:
     region:
       continent: Asia

@@ -8,10 +8,12 @@ import org.example.nazar.dto.FullReviewDTO;
 import org.example.nazar.dto.ReviewResultDTO;
 import org.example.nazar.exception.DuplicateHashIdException;
 import org.example.nazar.model.*;
+import org.example.nazar.service.scraper.IReviewAdder;
 import org.example.nazar.service.scraper.mainservices.DataBaseService;
-import org.example.nazar.service.scraper.IAddReviewToDataBase;
+import org.example.nazar.service.scraper.ISearchAndAddReviewToDataBase;
 import org.example.nazar.service.scraper.ISearchResultScarper;
 
+import org.example.nazar.service.scraper.mainservices.SearchAndSaveFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static org.example.nazar.util.stringbuilder.BuildStringForController.buildErrorResponse;
+import static org.example.nazar.util.stringbuilder.BuildStringForController.buildResultString;
+
 @Slf4j
 @RestController
 @RequestMapping("/api")
@@ -28,13 +33,18 @@ import java.util.Optional;
 public class ProductController {
 
     private final DataBaseService dataBaseService;
-    private final IAddReviewToDataBase iAddReviewToDataBase;
-    private final ISearchResultScarper iSearchResultScarper;
 
-    public ProductController(DataBaseService dataBaseService, @Qualifier("mobileService") IAddReviewToDataBase iAddReviewToDataBase, @Qualifier("mobileSearchResultScarper") ISearchResultScarper iSearchResultScarper) {
+    private final ISearchResultScarper iSearchResultScarper;
+    private final IReviewAdder iReviewAdder;
+    private final SearchAndSaveFactory searchAndSaveFactory;
+
+    public ProductController(DataBaseService dataBaseService,
+                             @Qualifier("mobileSearchResultScarper") ISearchResultScarper iSearchResultScarper,
+                             @Qualifier("mobileMultiThreadReviewAdder") IReviewAdder iReviewAdder, SearchAndSaveFactory searchAndSaveFactory) {
         this.dataBaseService = dataBaseService;
-        this.iAddReviewToDataBase = iAddReviewToDataBase;
         this.iSearchResultScarper = iSearchResultScarper;
+        this.iReviewAdder = iReviewAdder;
+        this.searchAndSaveFactory = searchAndSaveFactory;
     }
 
     @GetMapping
@@ -81,17 +91,8 @@ public class ProductController {
      * @return اطلاعات نظر ذخیره شده در صورت موفقیت، یا پیام خطا در صورت بروز مشکل
      */
     @PostMapping("/reviews")
-    public ResponseEntity<String> addReview(@RequestBody FullReviewDTO fullReviewDTO) throws Exception {
-        Review review = fullReviewDTO.getReview();
-        String productName = fullReviewDTO.getProductName();
-        String siteUrl = fullReviewDTO.getSiteUrl();
-        ProductReview savedReview;
-        try {
-            savedReview = dataBaseService.addReview(review, productName, siteUrl);
-        } catch (DuplicateHashIdException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
-
+    public ResponseEntity<String> addReview(@RequestBody FullReviewDTO fullReviewDTO) {
+        ProductReview savedReview = dataBaseService.addReview(fullReviewDTO);
         return ResponseEntity.ok().body(savedReview.toString());
 
 
@@ -104,7 +105,7 @@ public class ProductController {
      * @return اطلاعات سایت ذخیره شده
      */
     @PostMapping("/sites")
-    public ResponseEntity<Site> addSite(@RequestBody Site site) throws Exception {
+    public ResponseEntity<Site> addSite(@RequestBody Site site) {
 
         Site savedSite = dataBaseService.addSite(site);
         return ResponseEntity.ok(savedSite);
@@ -118,7 +119,7 @@ public class ProductController {
      * @return اطلاعات نوع محصول ذخیره شده در صورت موفقیت، یا پیام خطا در صورت تکراری بودن نوع
      */
     @PostMapping("/types") // تغییر مسیر به "/types" برای تطابق با استاندارد restfull
-    public ResponseEntity<Type> addType(@RequestBody Type type) throws Exception {
+    public ResponseEntity<Type> addType(@RequestBody Type type) {
         Type savedType = dataBaseService.addType(type);
         return ResponseEntity.ok(savedType);
     }
@@ -134,32 +135,32 @@ public class ProductController {
     public ResponseEntity<String> addReview(@RequestBody AddReviewDTO addReviewDTO) {
         String productNameSearchInput = addReviewDTO.getProductName();
         String productNameSearchResult = "";
+
         try {
+            // دریافت لیست نتایج جستجو برای محصول مورد نظر
             List<BaseDTO> listOfProductResults = iSearchResultScarper.getSearchResults(productNameSearchInput);
             Optional<BaseDTO> bestResult = iSearchResultScarper.findBestResult(listOfProductResults);
+
             if (bestResult.isPresent()) {
                 productNameSearchResult = bestResult.get().getTitle();
-                ReviewResultDTO results = iAddReviewToDataBase.addReviewOneByOne(bestResult.get(), addReviewDTO.getSiteUrl(), addReviewDTO.getTypeName());
+                // دریافت و اضافه کردن نظرات
+                List<ReviewResultDTO> reviewResultDTOS = searchAndSaveFactory
+                        .getSiteName(List.of("www.mobile.ir"))
+                        .searchAndAddToDatabase(bestResult.get(), addReviewDTO.getSiteUrl(), addReviewDTO.getTypeName());
 
-                return results == null ? ResponseEntity.notFound().build() :
-                        ResponseEntity.ok().body(
-                                " Searched : " + productNameSearchInput +
-                                        " Search results : " + productNameSearchResult +
-                                        " , Number of reviews founded: " +
-                                        results.getReviewsNumber() +
-                                        " , duplicated reviews " +
-                                        results.getDuplicateCount()
-                        );
+                // ساختن نتیجه خروجی
+                String resultString = buildResultString(reviewResultDTOS, productNameSearchInput, productNameSearchResult);
+
+                return ResponseEntity.ok(resultString);
             } else {
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            log.error("Error adding review from specific site ", e);
-            return ResponseEntity.status(500).body(
-                    " Searched : " + productNameSearchInput +
-                            " Search results : " + productNameSearchResult +
-                            " Error adding review : " + e.getMessage());
+            log.error("Error adding review from specific site", e);
+            return buildErrorResponse(productNameSearchInput, productNameSearchResult, e);
         }
     }
+
+
 }
 

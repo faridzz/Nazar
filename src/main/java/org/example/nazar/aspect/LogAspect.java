@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LogAspect {
 
-    @Around("execution(* org.example.nazar.service.scraper.IAddReviewToDataBase.*(..))")
+    @Around("execution(* org.example.nazar.service.scraper.ISearchAndAddReviewToDataBase.*(..))")
     @SuppressWarnings("unchecked")
     public ReviewResultDTO measureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();

@@ -4,7 +4,8 @@ import org.example.nazar.dto.BaseDTO;
 import org.example.nazar.dto.ReviewResultDTO;
 import org.example.nazar.exception.DuplicateHashIdException;
 
-public interface IAddReviewToDataBase {
+
+public interface ISearchAndAddReviewToDataBase {
 
 
     ReviewResultDTO addReviewOneByOne(BaseDTO baseDto, String siteUrl, String typeName) throws DuplicateHashIdException;

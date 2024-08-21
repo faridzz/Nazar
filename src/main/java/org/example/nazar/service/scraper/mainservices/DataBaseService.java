@@ -1,6 +1,7 @@
 package org.example.nazar.service.scraper.mainservices;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.nazar.dto.FullReviewDTO;
 import org.example.nazar.exception.*;
 import org.example.nazar.model.*;
 import org.example.nazar.repository.*;
@@ -113,14 +114,17 @@ public class DataBaseService {
     /**
      * اضافه کردن یک نظر جدید به یک محصول و سایت مشخص
      *
-     * @param review      نظر جدید
-     * @param productName نام محصول
-     * @param siteUrl     ادرس سایت
+     * @param fullReviewDTO نظر جدید با اطلاعات کامل درباره اون نظر
      * @return نظر محصول ذخیره شده در پایگاه داده یا null اگر محصول یا سایت یافت نشد
      */
 
 
-    public ProductReview addReview(Review review, String productName, String siteUrl) {
+    public ProductReview addReview(FullReviewDTO fullReviewDTO) {
+
+        Review review = fullReviewDTO.getReview();
+        String productName = fullReviewDTO.getProductName();
+        String siteUrl = fullReviewDTO.getSiteUrl();
+
         // یافتن محصول و سایت با شناسه‌های مشخص شده
         Product product = productRepository.findByName(productName).orElseThrow(
                 () -> new NotFoundException("Product not found", Product.class, productName)
@@ -131,6 +135,7 @@ public class DataBaseService {
         }
         // ساخت هش ای دی
         review.createHashId();
+        log.debug(review.getHashId());
         //اگر هش ای دی تکراری بود
         if (existReviewByHashId(review.getHashId())) {
             throw new DuplicateHashIdException("Review with hashId " + review.getHashId() + " already exists.");

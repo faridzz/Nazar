@@ -4,14 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
-public class ReviewResultDTO {
-
-    private Long reviewsNumber;
-    private int duplicateCount;
-    private String siteUrl;
-
+public class JwtTokenDTO {
+    private String token;
 }
