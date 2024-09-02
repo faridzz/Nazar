@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
-public interface ISearchResultScarper {
-    List<BaseDTO> getSearchResults(String productName);
+public interface ISearchResultScarper<T extends BaseDTO> {
+    List<T> getSearchResults(String productName, String type);
 
-    Optional<BaseDTO> findBestResult(List<BaseDTO> results);
+    Optional<T> findBestResult(List<T> results);
 }

@@ -1,44 +1,65 @@
 package org.example.nazar.service.scraper.mainservices;
 
-
 import lombok.extern.slf4j.Slf4j;
 import org.example.nazar.dto.BaseDTO;
 import org.example.nazar.dto.ReviewResultDTO;
-
+import org.example.nazar.enums.SiteType;
+import org.example.nazar.exception.NotFoundException;
 import org.example.nazar.service.scraper.IReviewAdder;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
 @Slf4j
 public class SearchAndSaveFactory {
 
-    private final Set<IReviewAdder> listOfSiteService = new HashSet<>();
-    private final IReviewAdder mobile;
+    private final SingleThreadOrMultiThread singleThreadOrMultiThread;
+    private Map<IReviewAdder<BaseDTO>, String> reviewAdderMap = new HashMap<>();
+    private final Set<IReviewAdder<BaseDTO>> relevantReviewAdders = new HashSet<>();
 
-    public SearchAndSaveFactory(@Qualifier("mobileMultiThreadReviewAdder") IReviewAdder mobile) {
-        this.mobile = mobile;
+    public SearchAndSaveFactory(SingleThreadOrMultiThread singleThreadOrMultiThread,
+                                AllSitesReviewAdder allSitesReviewAdder
+
+    ) {
+        this.singleThreadOrMultiThread = singleThreadOrMultiThread;
+        this.reviewAdderMap = allSitesReviewAdder.reviewAdderMap;
+
     }
 
     public SearchAndSaveFactory getSiteName(List<String> siteList) {
-        siteList = siteList.stream().map(site -> site.toLowerCase(Locale.ROOT).trim()).toList();
-        if (siteList.contains("www.mobile.ir")) {
-            this.listOfSiteService.add(mobile);
+
+
+        if (siteList.contains(SiteType.MOBILE.name())) {
+            reviewAdderMap.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(SiteType.MOBILE.name()))
+                    .forEach(entry -> relevantReviewAdders.add(entry.getKey()));
         }
-        // ToDo: Add other sites in the future ...
-        if (listOfSiteService.isEmpty())
-            throw new RuntimeException("cant find any thing because all entry site are wrong");
+
+        if (siteList.contains(SiteType.DIGIKALA.name())) {
+            reviewAdderMap.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(SiteType.DIGIKALA.name()))
+                    .forEach(entry -> relevantReviewAdders.add(entry.getKey()));
+        }
+
+        // بررسی اینکه اگر هیچ مقدار مرتبطی پیدا نشود، یک استثنا پرتاب شود
+        if (relevantReviewAdders.isEmpty()) {
+            throw new NotFoundException("Can't find any site because all entries are wrong.");
+        }
+
+        // اگر نیاز باشد، relevantReviewAdders را می‌توانید ذخیره کنید یا در مراحل بعدی از آن استفاده کنید.
+
         return this;
     }
 
-    public List<ReviewResultDTO> searchAndAddToDatabase(BaseDTO baseDto, String siteUrl, String typeName) {
+    public List<ReviewResultDTO> searchAndAddToDatabase(BaseDTO baseDto, String siteUrl, String typeName) throws IOException, InterruptedException {
         List<ReviewResultDTO> reviewResultDTOS = new LinkedList<>();
-        log.debug(listOfSiteService.toString());
-        for (IReviewAdder theClass : listOfSiteService) {
-            reviewResultDTOS.add(theClass.addReviews(baseDto, siteUrl, typeName));
+        Set<IReviewAdder<BaseDTO>> iReviewAdders = singleThreadOrMultiThread
+                .findMultiThreadOrSingleThread(baseDto, typeName, relevantReviewAdders);
+        for (IReviewAdder<BaseDTO> reviewAdder : iReviewAdders) {
+            reviewResultDTOS.add(reviewAdder.addReviewsToDatabase(baseDto, siteUrl, typeName));
         }
         return reviewResultDTOS;
     }

@@ -1,11 +1,9 @@
 package org.example.nazar.service.scraper.siteslogics.mobile;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.nazar.dto.BaseDTO;
 import org.example.nazar.dto.MobileDTO;
 import org.example.nazar.exception.ScraperException;
 import org.example.nazar.model.Review;
-import org.example.nazar.service.scraper.IFindUrlOfReviews;
 import org.example.nazar.service.scraper.IPageFetcher;
 import org.example.nazar.service.scraper.IReviewExtractor;
 import org.example.nazar.service.scraper.IReviewsScraper;
@@ -13,6 +11,7 @@ import org.example.nazar.util.time.datereformater.IDateReFormater;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,40 +19,40 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class MobileReviewsScraper implements IReviewsScraper, IFindUrlOfReviews {
+public class MobileReviewsScraper implements IReviewsScraper<MobileDTO> {
     private final IDateReFormater iDateReFormater;
     private final IPageFetcher pageFetcher;
     private final IReviewExtractor reviewExtractor;
 
     public MobileReviewsScraper(
-            IDateReFormater iDateReFormater,
+            @Qualifier("jalaliToGregorianDateMobile") IDateReFormater iDateReFormater,
             IPageFetcher pageFetcher,
-            IReviewExtractor reviewExtractor) {
+            @Qualifier("mobileReviewExtractor") IReviewExtractor reviewExtractor) {
         this.iDateReFormater = iDateReFormater;
         this.pageFetcher = pageFetcher;
         this.reviewExtractor = reviewExtractor;
     }
 
     @Override
-    public Optional<URL> getUrlOfProduct(BaseDTO product) {
-        if (product instanceof MobileDTO mobileDTO) {
-            String siteUrl = "https://www.mobile.ir";
-            String url = siteUrl + mobileDTO.getUrl();
-            String newUrlString = url.replace("specifications", "comments");
-            try {
-                return Optional.of(new URL(newUrlString));
-            } catch (MalformedURLException e) {
-                throw new ScraperException("cant build url for " + url, e);
-            }
+    public URL getUrlOfProduct(MobileDTO product) {
+        if (product.getUrl().isEmpty()) {
+            throw new ScraperException("cant build url for " + product.getUrl());
         }
-        return Optional.empty();
+        String prefixURL = "https://www.mobile.ir";
+        String url = prefixURL + product.getUrl();
+        String newUrlString = url.replace("specifications", "comments");
+        try {
+            return new URL(newUrlString);
+        } catch (MalformedURLException e) {
+            throw new ScraperException("cant build url for " + url, e);
+        }
+
     }
 
     @Override

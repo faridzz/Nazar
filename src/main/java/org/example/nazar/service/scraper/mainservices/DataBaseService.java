@@ -5,12 +5,12 @@ import org.example.nazar.dto.FullReviewDTO;
 import org.example.nazar.exception.*;
 import org.example.nazar.model.*;
 import org.example.nazar.repository.*;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 /**
  * سرویس مدیریت محصولات و نظرات مرتبط با آن‌ها
@@ -75,9 +75,13 @@ public class DataBaseService {
         productName = productName.trim().toLowerCase(Locale.ROOT);
         // یافتن محصول با شناسه مشخص شده
         String finalProductName = productName;
-        Product product = productRepository.findByName(productName).orElseThrow(
-                () -> new NotFoundException("Product not found", Product.class, finalProductName)
-        );
+        Product product = null;
+        try {
+            product = productRepository.findByName(productName);
+
+        } catch (Exception e) {
+            throw new NotFoundException("Product not found", Product.class, finalProductName);
+        }
 
         // نظرات مرتبط با محصول را برگردان
         return product.getProductReviews();
@@ -124,11 +128,17 @@ public class DataBaseService {
         Review review = fullReviewDTO.getReview();
         String productName = fullReviewDTO.getProductName();
         String siteUrl = fullReviewDTO.getSiteUrl();
-
+        String typeName = fullReviewDTO.getTypeName();
+        Product product;
         // یافتن محصول و سایت با شناسه‌های مشخص شده
-        Product product = productRepository.findByName(productName).orElseThrow(
-                () -> new NotFoundException("Product not found", Product.class, productName)
-        );
+        try {
+            product = productRepository.findByName(productName);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            product = productRepository.findByNameAndTypeName(productName, typeName);
+        } catch (Exception e) {
+            throw new NotFoundException("error while find product with name " + productName);
+        }
+
         Site site = siteRepository.findByUrl(siteUrl);
         if (site == null) {
             throw new NotFoundException("Site not found", Site.class, siteUrl);
@@ -168,9 +178,14 @@ public class DataBaseService {
     @Transactional
     public List<ProductReview> addReviews(List<Review> reviews, String productName, String siteUrl) {
         // یافتن محصول با نام مشخص شده
-        Product product = productRepository.findByName(productName).orElseThrow(
-                () -> new NotFoundException("Product not found", Product.class, productName)
-        );
+
+        Product product = null;
+        try {
+            product = productRepository.findByName(productName);
+
+        } catch (Exception e) {
+            throw new NotFoundException("Product not found", Product.class, productName);
+        }
 
         // یافتن سایت با آدرس مشخص شده
         Site site = siteRepository.findByUrl(siteUrl);
@@ -180,15 +195,16 @@ public class DataBaseService {
         reviewRepository.saveAll(reviews);  // ذخیره نظر جدید
         // تبدیل نظرات به ProductReview و ذخیره‌سازی گروهی
         // تبدیل نظرات به ProductReview و ذخیره‌سازی گروهی
+        Product finalProduct = product;
         List<ProductReview> productReviews = reviews.parallelStream()
                 .map(review -> {
                     ProductReview productReview = new ProductReview();
-                    productReview.setProduct(product);
+                    productReview.setProduct(finalProduct);
                     productReview.setSite(site);
                     productReview.setReview(review);
                     return productReview;
                 })
-                .collect(Collectors.toList()); // جمع‌آوری به لیست
+                .toList();
 
         // ذخیره‌سازی گروهی نظرات محصول
         return productReviewRepository.saveAll(productReviews);

@@ -4,16 +4,18 @@ package org.example.nazar.model;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.example.nazar.util.hashdata.EntityHashGenerator;
 
 import java.time.LocalDate;
 
 import java.time.ZoneId;
+import java.util.Objects;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @Table(indexes = {@Index(name = "idx_HashId", columnList = "hashId")})
 public class Review {
 
@@ -38,7 +40,8 @@ public class Review {
     private int voteUp;
     @Setter
     private int rating;
-
+    @Setter
+    private int maximumRate;
     @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
     private ProductReview productReview;
 
@@ -57,5 +60,16 @@ public class Review {
         this.content = content;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review review = (Review) o;
+        return Objects.equals(author, review.author) && Objects.equals(content, review.content) && Objects.equals(postedAt, review.postedAt);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(author, content, postedAt);
+    }
 }

@@ -1,25 +1,22 @@
 package org.example.nazar.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.nazar.dto.AddReviewDTO;
-import org.example.nazar.dto.BaseDTO;
-import org.example.nazar.dto.FullReviewDTO;
-
-import org.example.nazar.dto.ReviewResultDTO;
-import org.example.nazar.exception.DuplicateHashIdException;
-import org.example.nazar.model.*;
+import org.example.nazar.dto.*;
+import org.example.nazar.enums.SiteType;
+import org.example.nazar.model.Product;
+import org.example.nazar.model.ProductReview;
+import org.example.nazar.model.Site;
+import org.example.nazar.model.Type;
 import org.example.nazar.service.scraper.IReviewAdder;
-import org.example.nazar.service.scraper.mainservices.DataBaseService;
-import org.example.nazar.service.scraper.ISearchAndAddReviewToDataBase;
 import org.example.nazar.service.scraper.ISearchResultScarper;
-
+import org.example.nazar.service.scraper.mainservices.DataBaseService;
 import org.example.nazar.service.scraper.mainservices.SearchAndSaveFactory;
+import org.example.nazar.service.scraper.mainservices.SearchResults;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,14 +34,16 @@ public class ProductController {
     private final ISearchResultScarper iSearchResultScarper;
     private final IReviewAdder iReviewAdder;
     private final SearchAndSaveFactory searchAndSaveFactory;
+    private final SearchResults searchResults;
 
     public ProductController(DataBaseService dataBaseService,
                              @Qualifier("mobileSearchResultScarper") ISearchResultScarper iSearchResultScarper,
-                             @Qualifier("mobileMultiThreadReviewAdder") IReviewAdder iReviewAdder, SearchAndSaveFactory searchAndSaveFactory) {
+                             @Qualifier("mobileMultiThreadReviewAdder") IReviewAdder iReviewAdder, SearchAndSaveFactory searchAndSaveFactory, SearchResults searchResults) {
         this.dataBaseService = dataBaseService;
         this.iSearchResultScarper = iSearchResultScarper;
         this.iReviewAdder = iReviewAdder;
         this.searchAndSaveFactory = searchAndSaveFactory;
+        this.searchResults = searchResults;
     }
 
     @GetMapping
@@ -124,6 +123,17 @@ public class ProductController {
         return ResponseEntity.ok(savedType);
     }
 
+    @PostMapping("/search")
+    public ResponseEntity<List<SearchResponseDTO>> search(@RequestBody SearchSomethingDTO search) {
+        List<SearchResponseDTO> searchResponseDTOs = searchResults.search(search);
+        if (searchResponseDTOs != null) {
+            return ResponseEntity.ok(searchResponseDTOs);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
+
+    }
 
     /**
      * اضافه کردن نظرات یک محصول تنها با نام دقیق اون محصول د
@@ -131,6 +141,7 @@ public class ProductController {
      * @param addReviewDTO شامل اطلاعات نظر، نام محصول و آدرس سایت
      * @return تعداد نظرات اضافه شده در صورت موفقیت، یا پیام خطا در صورت بروز مشکل
      */
+
     @PostMapping("/add/one")
     public ResponseEntity<String> addReview(@RequestBody AddReviewDTO addReviewDTO) {
         String productNameSearchInput = addReviewDTO.getProductName();
@@ -138,14 +149,14 @@ public class ProductController {
 
         try {
             // دریافت لیست نتایج جستجو برای محصول مورد نظر
-            List<BaseDTO> listOfProductResults = iSearchResultScarper.getSearchResults(productNameSearchInput);
+            List<BaseDTO> listOfProductResults = iSearchResultScarper.getSearchResults(productNameSearchInput, addReviewDTO.getTypeName());
             Optional<BaseDTO> bestResult = iSearchResultScarper.findBestResult(listOfProductResults);
 
             if (bestResult.isPresent()) {
                 productNameSearchResult = bestResult.get().getTitle();
                 // دریافت و اضافه کردن نظرات
                 List<ReviewResultDTO> reviewResultDTOS = searchAndSaveFactory
-                        .getSiteName(List.of("www.mobile.ir"))
+                        .getSiteName(List.of(SiteType.MOBILE.name()))
                         .searchAndAddToDatabase(bestResult.get(), addReviewDTO.getSiteUrl(), addReviewDTO.getTypeName());
 
                 // ساختن نتیجه خروجی

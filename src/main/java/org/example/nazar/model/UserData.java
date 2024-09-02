@@ -4,13 +4,16 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 
 public class UserData {
     @Id
@@ -32,12 +35,16 @@ public class UserData {
     @NotNull
     private String email;
     @Column
-    @CreatedDate
     @Getter
-    @Setter
     private LocalDateTime createdDate;
     @OneToOne(mappedBy = "userData")
     @JsonManagedReference
     private UserSecurityData userSecurityData;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDateTime.now();
+    }
+
 
 }

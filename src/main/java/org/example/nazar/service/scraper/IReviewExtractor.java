@@ -7,5 +7,5 @@ import org.jsoup.nodes.Document;
 import java.util.List;
 
 public interface IReviewExtractor {
-    List<Review> extractReviews(Document doc, IDateReFormater dateReFormater);
+    List<Review> extractReviews(Object doc, IDateReFormater dateReFormater);
 }

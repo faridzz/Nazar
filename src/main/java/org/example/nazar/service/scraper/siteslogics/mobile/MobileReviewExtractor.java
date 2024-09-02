@@ -15,8 +15,9 @@ import java.util.List;
 @Component
 class MobileReviewExtractor implements IReviewExtractor {
     @Override
-    public List<Review> extractReviews(Document doc, IDateReFormater dateReFormater) {
+    public List<Review> extractReviews(Object docObj, IDateReFormater dateReFormater) {
         List<Review> reviews = new ArrayList<>();
+        Document doc = (Document) docObj;
         Elements commentElements = doc.select(".comment");
         for (Element commentElement : commentElements) {
             Element h3Tag = commentElement.selectFirst("h3");

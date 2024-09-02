@@ -2,7 +2,8 @@ spring:
   aop:
     proxy-target-class: true  # تنظیمات برای استفاده از CGLIB به‌جای JDK Proxy
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/postgres}
+    #  url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: root
     driver-class-name: org.postgresql.Driver
@@ -29,3 +30,5 @@ data:
     region:
       continent: Asia
       capital: Tehran
+server:
+  port: 8081

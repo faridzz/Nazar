@@ -5,6 +5,6 @@ import org.example.nazar.dto.BaseDTO;
 import java.util.List;
 import java.util.Optional;
 
-public interface IFindBestMatch {
-    Optional<BaseDTO> finder(List<BaseDTO> dto , String search);
+public interface IFindBestMatch<T extends BaseDTO> {
+    Optional<T> finder(List<T> dto , String search);
 }

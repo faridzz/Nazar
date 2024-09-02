@@ -10,6 +10,7 @@ import org.example.nazar.model.UserSecurityData;
 @AllArgsConstructor
 public class AuthenticationResponseDTO {
     private UserSecurityData userSecurityData;
+    @Getter
     private JwtTokenDTO jwtToken;
 
     @Override

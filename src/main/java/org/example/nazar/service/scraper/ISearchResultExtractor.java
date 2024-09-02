@@ -4,6 +4,6 @@ import org.example.nazar.dto.BaseDTO;
 
 import java.util.List;
 
-public interface ISearchResultExtractor {
-    List<BaseDTO> extract(String responseBody);
+public interface ISearchResultExtractor<T extends BaseDTO> {
+    List<T> extract(String responseBody);
 }
