@@ -8,5 +8,4 @@ public class EndOfReviewAPiException extends RuntimeException {
     public EndOfReviewAPiException() {
         super();
     }
-
 }
