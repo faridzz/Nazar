@@ -87,33 +87,6 @@ public class DataBaseService {
         return product.getProductReviews();
     }
 
-    /**
-     * @param url ادرس سایت رو وارد کن بدونه چیزا اضافه مثلا www.example.com
-     * @return Site یه ابجکت از سایت رو برمیگردونه
-     */
-    @Transactional(readOnly = true)
-    public Site getSiteByUrl(String url) {
-        url = url.trim().toLowerCase(Locale.ROOT);
-        Site site = siteRepository.findByUrl(url);
-        if (site == null) {
-            throw new NotFoundException("Site not found", Site.class, url);
-        }
-        return site;
-    }
-
-    /**
-     * @param typeName نوع محصول ورودی باشه
-     * @return Type یه ابجکت از تایپ رو برمیگردونه
-     */
-    @Transactional(readOnly = true)
-    public Type getTypeByName(String typeName) {
-        typeName = typeName.trim().toLowerCase(Locale.ROOT);
-        Type type = typeRepository.findByName(typeName);
-        if (type == null) {
-            throw new NotFoundException("Type " + typeName + " not found");
-        }
-        return type;
-    }
 
     /**
      * اضافه کردن یک نظر جدید به یک محصول و سایت مشخص
@@ -179,7 +152,7 @@ public class DataBaseService {
     public List<ProductReview> addReviews(List<Review> reviews, String productName, String siteUrl) {
         // یافتن محصول با نام مشخص شده
 
-        Product product = null;
+        Product product = new Product();
         try {
             product = productRepository.findByName(productName);
 
@@ -193,7 +166,6 @@ public class DataBaseService {
             throw new NotFoundException("Site not found", Site.class, siteUrl);
         }
         reviewRepository.saveAll(reviews);  // ذخیره نظر جدید
-        // تبدیل نظرات به ProductReview و ذخیره‌سازی گروهی
         // تبدیل نظرات به ProductReview و ذخیره‌سازی گروهی
         Product finalProduct = product;
         List<ProductReview> productReviews = reviews.parallelStream()

@@ -1,0 +1,577 @@
+{
+  "status": 200,
+  "data": {
+    "products": [
+      {
+        "id": 14214794,
+        "title_fa": "گوشی موبایل شیائومی مدل  Poco X6 Pro 5G دو سیم کارت ظرفیت 512 گیگابایت و رم 12 گیگابایت",
+        "title_en": "Xiaomi Poco X6 Pro 5G Dual SIM 512GB And 12GB RAM Mobile Phone",
+        "url": {
+          "base": null,
+          "uri": "/product/dkp-14214794/گوشی-موبایل-شیائومی-مدل-poco-x6-pro-دو-سیم-کارت-ظرفیت-512-گیگابایت-و-رم-12-گیگابایت"
+        },
+        "status": "marketable",
+        "has_quick_view": false,
+        "data_layer": {
+          "brand": "شیائومی",
+          "category": "[MO,گوشی موبایل]",
+          "metric6": 1460,
+          "dimension2": 0,
+          "dimension6": 0,
+          "dimension7": "none",
+          "dimension9": 4.6,
+          "dimension11": 0,
+          "dimension20": "marketable",
+          "item_category2": "موبایل",
+          "item_category3": "گوشی موبایل",
+          "item_category4": "",
+          "item_category5": ""
+        },
+        "product_type": "product",
+        "test_title_fa": "",
+        "test_title_en": "",
+        "digiplus": {
+          "services": [
+            "۴ ارسال رایگان ماهانه + ۲ ارسال رایگان بیشتر، ویژه سوپرمارکت",
+            "پشتیبانی اختصاصی",
+            "ارسال فوری برای شهر تهران (رایگان)"
+          ],
+          "services_summary": [
+            "ارسال فوری برای شهر تهران (رایگان)"
+          ],
+          "is_jet_eligible": true,
+          "cash_back": 0,
+          "is_general_location_jet_eligible": false,
+          "fast_shipping_text": "ارسال امروز"
+        },
+        "images": {
+          "main": {
+            "storage_ids": [],
+            "url": ["https://dkstatics-public.digikala.com/digikala-products/fef4d75b01a352241add7ae5cf2fc04130693dc1_1706096962.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/quality,q_80"],
+            "thumbnail_url": null,
+            "temporary_id": null,
+            "webp_url": [
+              "https://dkstatics-public.digikala.com/digikala-products/fef4d75b01a352241add7ae5cf2fc04130693dc1_1706096962.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/format,webp/quality,q_80"
+            ]
+          }
+        },
+        "rating": {
+          "rate": 90.2876712328767,
+          "count": 1460
+        },
+        "default_variant": {
+          "id": 54995499,
+          "lead_time": 0,
+          "rank": 99.89,
+          "rate": 0,
+          "statistics": null,
+          "status": "marketable",
+          "properties": {
+            "is_fast_shipping": false,
+            "is_ship_by_seller": false,
+            "is_multi_warehouse": false,
+            "has_similar_variants": false,
+            "is_rural": false,
+            "in_digikala_warehouse": true
+          },
+          "digiplus": {
+            "services": [
+              "۴ ارسال رایگان ماهانه + ۲ ارسال رایگان بیشتر، ویژه سوپرمارکت",
+              "پشتیبانی اختصاصی",
+              "ارسال فوری برای شهر تهران (رایگان)"
+            ],
+            "services_summary": [
+              "ارسال فوری برای شهر تهران (رایگان)"
+            ],
+            "is_jet_eligible": true,
+            "cash_back": 0,
+            "is_general_location_jet_eligible": false,
+            "fast_shipping_text": "ارسال امروز"
+          },
+          "warranty": {
+            "id": 6570,
+            "title_fa": "گارانتی 18 ماهه عمران تل(نیک مهر عمرانی)",
+            "title_en": "گارانتی 18 ماهه عمران تل(نیک مهر عمرانی)"
+          },
+          "color": {
+            "id": 1,
+            "title": "مشکی",
+            "hex_code": "#212121"
+          },
+          "seller": {
+            "id": 389375,
+            "title": "اسمارت تکنولوژی قشم",
+            "code": "CGDG9",
+            "url": "https://www.digikala.com/seller/CGDG9/",
+            "rating": {
+              "total_rate": 89,
+              "total_count": 15668,
+              "commitment": 99.9,
+              "no_return": 99.9,
+              "on_time_shipping": 99.9
+            },
+            "properties": {
+              "is_trusted": true,
+              "is_official": false,
+              "is_roosta": false,
+              "is_new": false
+            },
+            "stars": 5,
+            "grade": {
+              "label": "عالی",
+              "color": "#00a049"
+            },
+            "logo": null,
+            "registration_date": "4 سال و 1 ماه"
+          },
+          "digiclub": {
+            "point": 150
+          },
+          "insurance": {
+            "covers": [
+              {
+                "description": "جبران ۱۰۰ درصدی خسارات انواع سرقت",
+                "maxCoverage": null,
+                "maxUseCount": 1
+              },
+              {
+                "description": "جبران ۱۰۰ درصدی انواع صدمات فیزیکی مانند ضربه دیدگی، شکستگی و آب‌خوردگی غیرعمدی",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "جبران ۱۰۰ درصدی آتش‌سوزی و انفجار‌های غیرعمدی",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "جبران ۱۰۰ درصدی سوختگی یا نیم‌سوز شدن، القای الکتریکی، اتصال کوتاه و نوسانات ولتاژ غیرعمدی",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "همچنین تمام فرایند‌های بیمه دیجی‌پی از خرید تا دریافت خسارت آنلاین است.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "هزینه‌های دستگاه صدمه دیده حتی گوشی‌های آیفون در کمتر از ۴۸ ساعت بعد از اعلام خسارت پرداخت می‌شود.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "تعمیرات توسط متخصصین دیجی‌کالا سرویس انجام می‌شود و هر تعمیر ۳ ماه و هر قطعه تعمیر شده ۶ ماه گارانتی دارد.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "* توجه: برای استفاده از بیمه، بعد از دریافت کالای دیجیتال خود، به سایت دیجی‌پی، بخش بیمه تجهیزات و بعد پنل کاربری مراجعه کنید و بیمه خود را فعال کنید. در غیر این‌صورت امکان دانلود بیمه‌نامه و دریافت خسارت وجود ندارد.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "برای اعلام خسارت وارد پنل کاربری خود در سایت دیجی‌پی شوید و اطلاعات خود را تکمیل کنید.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "برای رفع مشکلات و سوالات خود می‌توانید در هفت روز هفته با شماره ۰۲۱۶۱۹۳۰۴۰۰ تماس بگیرید.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              }
+            ],
+            "base_premium": 2970000,
+            "discount": 0,
+            "tax": 267300,
+            "total_premium": 3237300,
+            "terms_and_conditions": "بران خسارات ناشی از ضربه خوردگی، شکستگی، آبخوردگی، سرقت با شکست حرز و کلیه حوادث مرتبط با دستگاه خریداری شده با کسورات و فرانشیز حداقل، بدون هزینه استهلاک \r\nارائه خدمات ویژه VIP، بدون هر گونه مراجعه فیزیکی",
+            "before_discount": 6463700,
+            "discount_percent": 50
+          },
+          "buy_box_lead_time": 0,
+          "price": {
+            "selling_price": 197500000,
+            "rrp_price": 197500000,
+            "order_limit": 1,
+            "is_incredible": false,
+            "is_promotion": false,
+            "is_locked_for_digiplus": false,
+            "shipping_fee": 272217,
+            "bnpl_active": false,
+            "marketable_stock": 1,
+            "discount_percent": 0,
+            "is_plus_early_access": false
+          },
+          "shipment_methods": {
+            "description": "موجود در انبار دیجی‌کالا",
+            "has_lead_time": true,
+            "providers": [
+              {
+                "title": "ارسال دیجی‌کالا",
+                "description": "این کالا در انبار دیجی‌کالا موجود و آماده پردازش است و توسط پیک دیجی‌کالا در بازه انتخابی ارسال خواهد شد.",
+                "has_lead_time": false,
+                "type": "digikala"
+              },
+              {
+                "title": "ارسال امروز (فعلا در شهر تهران و کرج)",
+                "description": "اگر سفارش را قبل از ساعت ۶ عصر ثبت کنید، همان روز ارسال می‌شود. در صورت ثبت سفارش بعد از ساعت ۶ عصر، فردا ارسال خواهد شد.",
+                "has_lead_time": false,
+                "type": "jet"
+              }
+            ]
+          },
+          "has_importer_price": false,
+          "manufacture_price_not_exist": false,
+          "has_best_price_in_last_month": false,
+          "buy_box_notices": [],
+          "variant_badges": [
+            {
+              "id": -1,
+              "type": "simple",
+              "slot": "pdp_above_add_to_cart",
+              "priority": 0,
+              "payload": {
+                "text": "تنها 1 عدد در انبار باقی مانده",
+                "text_color": "#d32f2f",
+                "icon": null,
+                "svg_icon": "https://dkstatics-public.digikala.com/digikala-static/54419b9303246cde131fcb5b251b86f2ab4aeb71_1716833765.svg"
+              }
+            }
+          ]
+        },
+        "properties": {
+          "is_fast_shipping": false,
+          "is_ship_by_seller": false,
+          "free_shipping_badge": false,
+          "is_multi_warehouse": false,
+          "is_fake": false,
+          "has_gift": false,
+          "min_price_in_last_month": 170500000,
+          "is_non_inventory": false,
+          "is_ad": false,
+          "ad": [],
+          "is_jet_eligible": false,
+          "is_medical_supplement": false
+        },
+        "badges": [
+          {
+            "icon": {
+              "storage_ids": [],
+              "url": [
+                "https://dkstatics-public.digikala.com/digikala-static/40103386d101974d18b40cee05e8d62823a657fa_1678547065.png"
+              ],
+              "thumbnail_url": null,
+              "temporary_id": null,
+              "webp_url": null
+            },
+            "title": "ارسال رایگان"
+          }
+        ],
+        "colors": [
+          {
+            "id": 1,
+            "title": "مشکی",
+            "hex_code": "#212121"
+          }
+        ],
+        "platforms": [
+          "digikala"
+        ],
+        "has_fresh_touchpoint": false
+      },
+      {
+        "id": 14192208,
+        "title_fa": "گوشی موبایل شیائومی مدل Poco X6 5G دو سیم کارت ظرفیت 256 گیگابایت و رم 12 گیگابایت",
+        "title_en": "Xiaomi Poco X6 5G Dual SIM 256GB And 12GB RAM Mobile Phone",
+        "url": {
+          "base": null,
+          "uri": "/product/dkp-14192208/گوشی-موبایل-شیائومی-مدل-poco-x6-5g-دو-سیم-کارت-ظرفیت-256-گیگابایت-و-رم-12-گیگابایت"
+        },
+        "status": "marketable",
+        "has_quick_view": false,
+        "data_layer": {
+          "brand": "شیائومی",
+          "category": "[MO,گوشی موبایل]",
+          "metric6": 432,
+          "dimension2": 0,
+          "dimension6": 0,
+          "dimension7": "none",
+          "dimension9": 4.5,
+          "dimension11": 0,
+          "dimension20": "marketable",
+          "item_category2": "موبایل",
+          "item_category3": "گوشی موبایل",
+          "item_category4": "",
+          "item_category5": ""
+        },
+        "product_type": "product",
+        "test_title_fa": "",
+        "test_title_en": "",
+        "digiplus": {
+          "services": [
+            "۴ ارسال رایگان ماهانه + ۲ ارسال رایگان بیشتر، ویژه سوپرمارکت",
+            "پشتیبانی اختصاصی",
+            "ارسال فوری برای شهر تهران (رایگان)"
+          ],
+          "services_summary": [
+            "ارسال فوری برای شهر تهران (رایگان)"
+          ],
+          "is_jet_eligible": true,
+          "cash_back": 0,
+          "is_general_location_jet_eligible": false,
+          "fast_shipping_text": "ارسال امروز"
+        },
+        "images": {
+          "main": {
+            "storage_ids": [],
+            "url": [
+              "https://dkstatics-public.digikala.com/digikala-products/400e6c4f919c9b54edce6622537227d8d989133f_1705923995.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/quality,q_80"
+            ],
+            "thumbnail_url": null,
+            "temporary_id": null,
+            "webp_url": [
+              "https://dkstatics-public.digikala.com/digikala-products/400e6c4f919c9b54edce6622537227d8d989133f_1705923995.jpg?x-oss-process=image/resize,m_lfit,h_300,w_300/format,webp/quality,q_80"
+            ]
+          }
+        },
+        "rating": {
+          "rate": 89.8611111111111,
+          "count": 432
+        },
+        "default_variant": {
+          "id": 56030398,
+          "lead_time": 0,
+          "rank": 100,
+          "rate": 100,
+          "statistics": {
+            "totally_satisfied": {
+              "rate_count": 2,
+              "rate": 100
+            },
+            "satisfied": {
+              "rate_count": 0,
+              "rate": 0
+            },
+            "neutral": {
+              "rate_count": 0,
+              "rate": 0
+            },
+            "dissatisfied": {
+              "rate_count": 0,
+              "rate": 0
+            },
+            "totally_dissatisfied": {
+              "rate_count": 0,
+              "rate": 0
+            },
+            "total_count": 2,
+            "total_rate": 100
+          },
+          "status": "marketable",
+          "properties": {
+            "is_fast_shipping": false,
+            "is_ship_by_seller": false,
+            "is_multi_warehouse": false,
+            "has_similar_variants": false,
+            "is_rural": false,
+            "in_digikala_warehouse": true
+          },
+          "digiplus": {
+            "services": [
+              "۴ ارسال رایگان ماهانه + ۲ ارسال رایگان بیشتر، ویژه سوپرمارکت",
+              "پشتیبانی اختصاصی",
+              "ارسال فوری برای شهر تهران (رایگان)"
+            ],
+            "services_summary": [
+              "ارسال فوری برای شهر تهران (رایگان)"
+            ],
+            "is_jet_eligible": true,
+            "cash_back": 0,
+            "is_general_location_jet_eligible": false,
+            "fast_shipping_text": "ارسال امروز"
+          },
+          "warranty": {
+            "id": 4711,
+            "title_fa": "گارانتی 18 ماهه همراه پخش آینده",
+            "title_en": "گارانتی 18 ماهه همراه پخش آینده"
+          },
+          "color": {
+            "id": 4,
+            "title": "آبی",
+            "hex_code": "#2196f3"
+          },
+          "seller": {
+            "id": 840322,
+            "title": "پایاگستر شهر",
+            "code": "DVEFT",
+            "url": "https://www.digikala.com/seller/DVEFT/",
+            "rating": {
+              "total_rate": 86,
+              "total_count": 17269,
+              "commitment": 99.9,
+              "no_return": 99.9,
+              "on_time_shipping": 99.8
+            },
+            "properties": {
+              "is_trusted": true,
+              "is_official": false,
+              "is_roosta": false,
+              "is_new": false
+            },
+            "stars": 5,
+            "grade": {
+              "label": "عالی",
+              "color": "#00a049"
+            },
+            "logo": null,
+            "registration_date": "2 سال و 9 ماه"
+          },
+          "digiclub": {
+            "point": 150
+          },
+          "insurance": {
+            "covers": [
+              {
+                "description": "جبران ۱۰۰ درصدی خسارات انواع سرقت",
+                "maxCoverage": null,
+                "maxUseCount": 1
+              },
+              {
+                "description": "جبران ۱۰۰ درصدی انواع صدمات فیزیکی مانند ضربه دیدگی، شکستگی و آب‌خوردگی غیرعمدی",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "جبران ۱۰۰ درصدی آتش‌سوزی و انفجار‌های غیرعمدی",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "جبران ۱۰۰ درصدی سوختگی یا نیم‌سوز شدن، القای الکتریکی، اتصال کوتاه و نوسانات ولتاژ غیرعمدی",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "همچنین تمام فرایند‌های بیمه دیجی‌پی از خرید تا دریافت خسارت آنلاین است.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "هزینه‌های دستگاه صدمه دیده حتی گوشی‌های آیفون در کمتر از ۴۸ ساعت بعد از اعلام خسارت پرداخت می‌شود.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "تعمیرات توسط متخصصین دیجی‌کالا سرویس انجام می‌شود و هر تعمیر ۳ ماه و هر قطعه تعمیر شده ۶ ماه گارانتی دارد.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "* توجه: برای استفاده از بیمه، بعد از دریافت کالای دیجیتال خود، به سایت دیجی‌پی، بخش بیمه تجهیزات و بعد پنل کاربری مراجعه کنید و بیمه خود را فعال کنید. در غیر این‌صورت امکان دانلود بیمه‌نامه و دریافت خسارت وجود ندارد.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "برای اعلام خسارت وارد پنل کاربری خود در سایت دیجی‌پی شوید و اطلاعات خود را تکمیل کنید.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              },
+              {
+                "description": "برای رفع مشکلات و سوالات خود می‌توانید در هفت روز هفته با شماره ۰۲۱۶۱۹۳۰۴۰۰ تماس بگیرید.",
+                "maxCoverage": null,
+                "maxUseCount": null
+              }
+            ],
+            "base_premium": 2330000,
+            "discount": 0,
+            "tax": 209700,
+            "total_premium": 2539700,
+            "terms_and_conditions": "بران خسارات ناشی از ضربه خوردگی، شکستگی، آبخوردگی، سرقت با شکست حرز و کلیه حوادث مرتبط با دستگاه خریداری شده با کسورات و فرانشیز حداقل، بدون هزینه استهلاک \r\nارائه خدمات ویژه VIP، بدون هر گونه مراجعه فیزیکی",
+            "before_discount": 5068500,
+            "discount_percent": 50
+          },
+          "buy_box_lead_time": 0,
+          "price": {
+            "selling_price": 154990000,
+            "rrp_price": 154990000,
+            "order_limit": 3,
+            "is_incredible": false,
+            "is_promotion": false,
+            "is_locked_for_digiplus": false,
+            "shipping_fee": 272217,
+            "bnpl_active": false,
+            "discount_percent": 0,
+            "is_plus_early_access": false
+          },
+          "shipment_methods": {
+            "description": "موجود در انبار دیجی‌کالا",
+            "has_lead_time": true,
+            "providers": [
+              {
+                "title": "ارسال دیجی‌کالا",
+                "description": "این کالا در انبار دیجی‌کالا موجود و آماده پردازش است و توسط پیک دیجی‌کالا در بازه انتخابی ارسال خواهد شد.",
+                "has_lead_time": false,
+                "type": "digikala"
+              },
+              {
+                "title": "ارسال امروز (فعلا در شهر تهران و کرج)",
+                "description": "اگر سفارش را قبل از ساعت ۶ عصر ثبت کنید، همان روز ارسال می‌شود. در صورت ثبت سفارش بعد از ساعت ۶ عصر، فردا ارسال خواهد شد.",
+                "has_lead_time": false,
+                "type": "jet"
+              }
+            ]
+          },
+          "has_importer_price": false,
+          "manufacture_price_not_exist": false,
+          "has_best_price_in_last_month": false,
+          "buy_box_notices": [],
+          "variant_badges": []
+        },
+        "properties": {
+          "is_fast_shipping": false,
+          "is_ship_by_seller": false,
+          "free_shipping_badge": false,
+          "is_multi_warehouse": false,
+          "is_fake": false,
+          "has_gift": false,
+          "min_price_in_last_month": 153000000,
+          "is_non_inventory": false,
+          "is_ad": false,
+          "ad": [],
+          "is_jet_eligible": false,
+          "is_medical_supplement": false
+        },
+        "badges": [
+          {
+            "icon": {
+              "storage_ids": [],
+              "url": [
+                "https://dkstatics-public.digikala.com/digikala-static/40103386d101974d18b40cee05e8d62823a657fa_1678547065.png"
+              ],
+              "thumbnail_url": null,
+              "temporary_id": null,
+              "webp_url": null
+            },
+            "title": "ارسال رایگان"
+          }
+        ],
+        "colors": [
+          {
+            "id": 4,
+            "title": "آبی",
+            "hex_code": "#2196f3"
+          },
+          {
+            "id": 2,
+            "title": "سفید",
+            "hex_code": "#FFFFFF"
+          }
+        ],
+        "platforms": [
+          "digikala"
+        ],
+        "has_fresh_touchpoint": false
+      }
+    ]
+  }
+}
