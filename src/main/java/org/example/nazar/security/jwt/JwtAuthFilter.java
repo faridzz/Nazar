@@ -1,6 +1,7 @@
 package org.example.nazar.security.jwt;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +40,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // Check if the header starts with "Bearer "
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7); // Extract token
-            username = jwtService.extractUsername(token); // Extract username from token
+            try {
+                username = jwtService.extractUsername(token); // Extract username from token
+            } catch (ExpiredJwtException ex) {
+                // ExpiredJwtException handel
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{ \"error\": \"JWT token has expired\", \"details\": \"" + ex.getMessage() + "\" }");
+                return;
+
+            } catch (Exception e) {
+                // Other exception handel
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{ \"error\": \"JWT token is invalid\", \"details\": \"" + e.getMessage() + "\" }");
+                return;
+            }
         }
 
         // If the token is valid and no authentication is set in the context
