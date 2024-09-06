@@ -35,20 +35,19 @@ public class DigikalaSearchResultExtractor implements ISearchResultExtractor<Dig
                     JsonNode imageNode = node.path("images").path("main").path("url");
                     if (imageNode.isArray() && !imageNode.isEmpty()) {
                         dto.setImage(imageNode.get(0).asText());
-                    } else {
-                        log.warn("Image URL array is missing or empty for product ID: {}", dto.getId());
                     }
 
                     // دریافت URL محصول
                     JsonNode urlNode = node.path("url").path("uri");
                     if (urlNode.isTextual()) {
                         dto.setUrl(urlNode.asText());
-                    } else {
-                        log.warn("Product URL is missing or not a text for product ID: {}", dto.getId());
                     }
 
                 } catch (Exception e) {
                     log.error("Error processing product ID: {} - {}", node.path("id").asInt(), e.getMessage());
+                }
+                if (dto.getTitle().isEmpty() || dto.getUrl().isEmpty()) {
+                    continue;
                 }
                 searchResults.add(dto);
             }
