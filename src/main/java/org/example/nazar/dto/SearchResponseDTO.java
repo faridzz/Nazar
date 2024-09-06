@@ -9,13 +9,13 @@ import java.util.List;
 @Data
 public class SearchResponseDTO {
     private SiteType siteType;
-    private HashMap<String, String> searchResult;//-> <title , product url>
+    private List<BaseDTO> baseDTO;
 
     @Override
     public String toString() {
         return "Search results {" +
                 "siteType =" + siteType +
-                ", search =" + searchResult +
+                ", search =" + baseDTO +
                 '}';
     }
 }
