@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Component
@@ -22,7 +23,7 @@ public class SearchResults {
         this.digikalaSearchResultScarper = digikalaSearchResultScarper;
     }
 
-    // استخراج لیست SiteType از SearchSomethingDTO
+    // extract list of site who user want to search
     private static List<SiteType> extractSiteList(SearchSomethingDTO search) {
         return search.getSitesUrl().stream()
                 .map(url -> url.toLowerCase().trim())
@@ -31,19 +32,20 @@ public class SearchResults {
                 .toList();
     }
 
-    // ساخت یک SearchResponseDTO از طریق scraper
+    // build a response to shows the user as part of search result
     private <T extends BaseDTO> SearchResponseDTO buildSearchResponse(ISearchResultScarper<T> searchResultScarper, SiteType siteType, String productName, String productType) {
         List<T> searchResults = searchResultScarper.getSearchResults(productName, productType);
-        List<String> titles = searchResults.stream()
-                .map(BaseDTO::getTitle)
-                .toList();
+        HashMap<String, String> resultHashMap = new HashMap<>();
+        searchResults.forEach(product -> resultHashMap.put(product.getTitle(), product.getUrl()));
+
 
         SearchResponseDTO searchResponseDTO = new SearchResponseDTO();
         searchResponseDTO.setSiteType(siteType);
-        searchResponseDTO.setSearchResult(titles);
+        searchResponseDTO.setSearchResult(resultHashMap);
         return searchResponseDTO;
     }
 
+    //main method of this class
     public List<SearchResponseDTO> search(SearchSomethingDTO search) {
         List<SearchResponseDTO> searchResponseDTOS = new ArrayList<>();
         List<SiteType> siteTypes = extractSiteList(search);

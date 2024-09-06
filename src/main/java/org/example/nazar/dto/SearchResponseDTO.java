@@ -3,12 +3,13 @@ package org.example.nazar.dto;
 import lombok.Data;
 import org.example.nazar.enums.SiteType;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Data
 public class SearchResponseDTO {
     private SiteType siteType;
-    private List<String> searchResult;
+    private HashMap<String, String> searchResult;//-> <title , product url>
 
     @Override
     public String toString() {

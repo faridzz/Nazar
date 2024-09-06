@@ -7,17 +7,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MobileDTO extends BaseDTO {
-    private int id; // شناسه محصول
-    private String image; // لینک تصویر محصول
-    private String url; // لینک مشخصات محصول
+
 
     @Override
     public String toString() {
         return "MobileDTO{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", name='" + getTitle() + '\'' +
-                ", image='" + image + '\'' +
-                ", url='" + url + '\'' +
+                ", image='" + getImage() + '\'' +
+                ", url='" + getUrl() + '\'' +
 
                 '}';
     }
