@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SearchResults {
@@ -35,13 +36,14 @@ public class SearchResults {
     // build a response to shows the user as part of search result
     private <T extends BaseDTO> SearchResponseDTO buildSearchResponse(ISearchResultScarper<T> searchResultScarper, SiteType siteType, String productName, String productType) {
         List<T> searchResults = searchResultScarper.getSearchResults(productName, productType);
-        HashMap<String, String> resultHashMap = new HashMap<>();
-        searchResults.forEach(product -> resultHashMap.put(product.getTitle(), product.getUrl()));
+        searchResults = searchResults.stream()
+                .filter(dto -> dto.getTitle() != null && !dto.getTitle().isBlank() && dto.getUrl() != null && !dto.getUrl().isBlank())
+                .toList();
 
 
         SearchResponseDTO searchResponseDTO = new SearchResponseDTO();
         searchResponseDTO.setSiteType(siteType);
-        searchResponseDTO.setSearchResult(resultHashMap);
+        searchResponseDTO.setBaseDTO((List<BaseDTO>) searchResults);
         return searchResponseDTO;
     }
 
