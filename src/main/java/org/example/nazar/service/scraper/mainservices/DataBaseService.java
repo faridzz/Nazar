@@ -2,6 +2,7 @@ package org.example.nazar.service.scraper.mainservices;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.nazar.dto.FullReviewDTO;
+import org.example.nazar.enums.SiteType;
 import org.example.nazar.exception.*;
 import org.example.nazar.model.*;
 import org.example.nazar.repository.*;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * سرویس مدیریت محصولات و نظرات مرتبط با آن‌ها
+ * Service class for managing products and their associated reviews.
  */
 @Slf4j
 @Service
@@ -38,135 +39,146 @@ public class DataBaseService {
     }
 
     /**
-     * اضافه کردن یک محصول جدید به سیستم
+     * Adds a new product to the system.
      *
-     * @param productName نام محصول جدید
-     * @param type        تایپ محصول
-     * @return محصول ذخیره شده در پایگاه داده
+     * @param productName the name of the new product.
+     * @param type        the type of the product.
+     * @return the saved product in the database.
      */
-
     public Product addProduct(String productName, String type) {
+        // Normalize product name and type by trimming and converting to lowercase
         productName = productName.trim().toLowerCase(Locale.ROOT);
         type = type.trim().toLowerCase(Locale.ROOT);
+
+        // Check if the type exists
         if (typeRepository.existsByName(type)) {
             Type productType = typeRepository.findByName(type);
+
+            // Create a new Product entity
             Product product = new Product();
             product.setName(productName);
             product.setType(productType);
-            //اگر یه محصول تکراری بود پرتاب استثنا
+
+            // If the product already exists, return the existing product
             if (productRepository.existsByNameAndTypeName(productName, type)) {
-                log.info("Product {} is already exists", productName);
+                log.info("Product {} already exists", productName);
                 return productRepository.findByNameAndTypeName(productName, type);
             }
+
+            // Save and return the new product
             return productRepository.save(product);
         }
-        //اگر نوع محصول وجود نداشت پرتاب استثنا
+
+        // Throw an exception if the product type is not found
         throw new ProductTypeNotFoundException();
     }
 
     /**
-     * دریافت لیست نظرات مربوط به یک محصول خاص
+     * Retrieves the list of reviews for a specific product.
      *
-     * @param productName نام محصول
-     * @return لیست نظرات محصول یا null اگر محصول یافت نشد
+     * @param productName the name of the product.
+     * @return the list of product reviews, or null if the product is not found.
      */
     @Transactional(readOnly = true)
     public List<ProductReview> getReviewsForProduct(String productName) {
+        // Normalize product name by trimming and converting to lowercase
         productName = productName.trim().toLowerCase(Locale.ROOT);
-        // یافتن محصول با شناسه مشخص شده
-        String finalProductName = productName;
-        Product product = null;
+
+        // Find the product by name
+        Product product;
         try {
             product = productRepository.findByName(productName);
-
         } catch (Exception e) {
-            throw new NotFoundException("Product not found", Product.class, finalProductName);
+            throw new NotFoundException("Product not found", Product.class, productName);
         }
 
-        // نظرات مرتبط با محصول را برگردان
+        // Return the associated product reviews
         return product.getProductReviews();
     }
 
-
     /**
-     * اضافه کردن یک نظر جدید به یک محصول و سایت مشخص
+     * Adds a new review to a specific product and site.
      *
-     * @param fullReviewDTO نظر جدید با اطلاعات کامل درباره اون نظر
-     * @return نظر محصول ذخیره شده در پایگاه داده یا null اگر محصول یا سایت یافت نشد
+     * @param fullReviewDTO the review DTO containing the review, product name, and site URL.
+     * @return the saved product review in the database.
      */
-
-
     public ProductReview addReview(FullReviewDTO fullReviewDTO) {
-
+        // Extract review, product name, site URL, and type name from DTO
         Review review = fullReviewDTO.getReview();
         String productName = fullReviewDTO.getProductName();
         String siteUrl = fullReviewDTO.getSiteUrl();
         String typeName = fullReviewDTO.getTypeName();
         Product product;
-        // یافتن محصول و سایت با شناسه‌های مشخص شده
+
+        // Attempt to find the product by name and type, handling exceptions
         try {
             product = productRepository.findByName(productName);
         } catch (IncorrectResultSizeDataAccessException e) {
             product = productRepository.findByNameAndTypeName(productName, typeName);
         } catch (Exception e) {
-            throw new NotFoundException("error while find product with name " + productName);
+            throw new NotFoundException("Error while finding product with name " + productName);
         }
 
+        // Find the site by URL, throwing an exception if not found
         Site site = siteRepository.findByUrl(siteUrl);
         if (site == null) {
             throw new NotFoundException("Site not found", Site.class, siteUrl);
         }
-        // ساخت هش ای دی
+
+        // Generate a hash ID for the review
         review.createHashId();
         log.debug(review.getHashId());
-        //اگر هش ای دی تکراری بود
+
+        // Check if a review with the same hash ID already exists
         if (existReviewByHashId(review.getHashId())) {
             throw new DuplicateHashIdException("Review with hashId " + review.getHashId() + " already exists.");
         }
-        // تلاش برای ذخیره نظر جدید
+
+        // Save the new review to the database
         reviewRepository.save(review);
 
-
-        // ایجاد یک نظر محصول جدید و مقداردهی آن
+        // Create and populate a new ProductReview entity
         ProductReview productReview = new ProductReview();
         productReview.setProduct(product);
         productReview.setSite(site);
         productReview.setReview(review);
 
-        // ذخیره و برگرداندن نظر محصول جدید
+        // Save and return the new ProductReview
         return productReviewRepository.save(productReview);
     }
 
-
     /**
-     * اضافه کردن لیستی از نظرات جدید به یک محصول و سایت مشخص.
-     * این متد نظرات را به صورت گروهی ذخیره می‌کند تا کارایی و عملکرد بهتری داشته باشد.
+     * Adds a list of new reviews to a specific product and site in bulk.
      *
-     * @param reviews     لیست نظرات جدید
-     * @param productName نام محصول
-     * @param siteUrl     آدرس سایت
-     * @return لیست نظرات محصول ذخیره شده در پایگاه داده
-     * @throws NotFoundException اگر محصول یا سایت یافت نشد
+     * @param reviews     the list of new reviews.
+     * @param productName the name of the product.
+     * @param siteUrl     the URL of the site.
+     * @return the list of saved product reviews.
+     * @throws NotFoundException if the product or site is not found.
      */
     @Transactional
     public List<ProductReview> addReviews(List<Review> reviews, String productName, String siteUrl) {
-        // یافتن محصول با نام مشخص شده
-
-        Product product = new Product();
+        // Find the product by name
+        Product product;
         try {
             product = productRepository.findByName(productName);
-
         } catch (Exception e) {
             throw new NotFoundException("Product not found", Product.class, productName);
         }
 
-        // یافتن سایت با آدرس مشخص شده
+        // Generate hash IDs for each review in parallel
+        reviews.parallelStream().forEach(Review::createHashId);
+
+        // Find the site by URL, throwing an exception if not found
         Site site = siteRepository.findByUrl(siteUrl);
         if (site == null) {
             throw new NotFoundException("Site not found", Site.class, siteUrl);
         }
-        reviewRepository.saveAll(reviews);  // ذخیره نظر جدید
-        // تبدیل نظرات به ProductReview و ذخیره‌سازی گروهی
+
+        // Save the reviews in bulk to the database
+        reviewRepository.saveAll(reviews);
+
+        // Convert reviews to ProductReview entities and associate them with the product and site
         Product finalProduct = product;
         List<ProductReview> productReviews = reviews.parallelStream()
                 .map(review -> {
@@ -178,39 +190,68 @@ public class DataBaseService {
                 })
                 .toList();
 
-        // ذخیره‌سازی گروهی نظرات محصول
+        // Save and return the list of ProductReviews
         return productReviewRepository.saveAll(productReviews);
     }
 
-
     /**
-     * اضافه کردن یک سایت جدید به سیستم
+     * Adds a new site to the system.
      *
-     * @param site سایت جدید
-     * @return سایت ذخیره شده در پایگاه داده
+     * @param site the new site to add.
+     * @return the saved site in the database.
      */
     public Site addSite(Site site) {
+        // Check if the site already exists by URL
         if (siteRepository.existsByUrl(site.getUrl())) {
             throw new DuplicateSiteException();
         }
+        // Save and return the new site
         return siteRepository.save(site);
     }
 
     /**
-     * اضافه کردن یک نوع جدید به سیستم
+     * Adds a new site to the system by SiteType.
      *
-     * @param type نوع جدید محصول
-     * @return نوع محصول ذخیره شده در پایگاه داده
+     * @param site the new site represented by SiteType.
+     */
+    public void addSite(SiteType site) {
+        // Check if the site already exists by URL
+        if (siteRepository.existsByUrl(site.getUrl())) {
+            siteRepository.findByUrl(site.getUrl());
+            return;
+        }
+
+        // Create a new Site entity and set its fields
+        Site siteBuilder = new Site();
+        siteBuilder.setName(site.name());
+        siteBuilder.setUrl(site.getUrl());
+
+        // Save and return the new site
+        siteRepository.save(siteBuilder);
+    }
+
+    /**
+     * Adds a new product type to the system.
+     *
+     * @param type the new product type to add.
+     * @return the saved product type in the database.
      */
     public Type addType(Type type) {
-        // بررسی تکراری نبودن نام نوع محصول (در صورت نیاز)
+        // Check if the product type already exists
         if (typeRepository.existsByName(type.getName())) {
             throw new DuplicateTypeException();
         }
+
+        // Save and return the new product type
         return typeRepository.save(type);
     }
 
-    //
+    /**
+     * Checks if a review with a given hash ID already exists.
+     *
+     * @param hashId the hash ID of the review.
+     * @return true if the review exists, false otherwise.
+     */
     public boolean existReviewByHashId(String hashId) {
         return reviewRepository.existsByHashId(hashId);
     }
