@@ -1,4 +1,4 @@
-package org.example.nazar.service.scraper.mainservices;
+package org.example.nazar.service.scraper.controllerservices;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.nazar.dto.BaseDTO;
@@ -6,11 +6,11 @@ import org.example.nazar.dto.ReviewResultDTO;
 import org.example.nazar.enums.SiteType;
 import org.example.nazar.exception.NotFoundException;
 import org.example.nazar.service.scraper.IReviewAdder;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
@@ -32,13 +32,13 @@ public class SearchAndSaveFactory {
     public SearchAndSaveFactory getSiteName(List<String> siteList) {
 
 
-        if (siteList.contains(SiteType.MOBILE.name())) {
+        if (siteList.contains(SiteType.MOBILE.getUrl())) {
             reviewAdderMap.entrySet().stream()
                     .filter(entry -> entry.getValue().equals(SiteType.MOBILE.name()))
                     .forEach(entry -> relevantReviewAdders.add(entry.getKey()));
         }
 
-        if (siteList.contains(SiteType.DIGIKALA.name())) {
+        if (siteList.contains(SiteType.DIGIKALA.getUrl())) {
             reviewAdderMap.entrySet().stream()
                     .filter(entry -> entry.getValue().equals(SiteType.DIGIKALA.name()))
                     .forEach(entry -> relevantReviewAdders.add(entry.getKey()));
@@ -54,12 +54,12 @@ public class SearchAndSaveFactory {
         return this;
     }
 
-    public List<ReviewResultDTO> searchAndAddToDatabase(BaseDTO baseDto, String siteUrl, String typeName) throws IOException, InterruptedException {
+    public List<ReviewResultDTO> searchAndAddToDatabase(BaseDTO baseDto, SiteType siteType, String typeName) throws IOException, InterruptedException, ExecutionException {
         List<ReviewResultDTO> reviewResultDTOS = new LinkedList<>();
         Set<IReviewAdder<BaseDTO>> iReviewAdders = singleThreadOrMultiThread
                 .findMultiThreadOrSingleThread(baseDto, typeName, relevantReviewAdders);
         for (IReviewAdder<BaseDTO> reviewAdder : iReviewAdders) {
-            reviewResultDTOS.add(reviewAdder.addReviewsToDatabase(baseDto, siteUrl, typeName));
+            reviewResultDTOS.add(reviewAdder.addReviewsToDatabase(baseDto, siteType, typeName));
         }
         return reviewResultDTOS;
     }

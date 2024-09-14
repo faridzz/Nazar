@@ -28,7 +28,7 @@ public class MobileSearchResultExtractor implements ISearchResultExtractor {
             // پیمایش JSON و ساخت DTO ها
             for (JsonNode node : rootNode) {
                 MobileDTO dto = new MobileDTO();
-                dto.setId(node.get("id").asInt());
+                dto.setId(node.get("id").asLong());
                 dto.setTitle(node.get("title").asText());
                 dto.setImage(node.get("image").asText());
                 dto.setUrl(node.get("url").asText());

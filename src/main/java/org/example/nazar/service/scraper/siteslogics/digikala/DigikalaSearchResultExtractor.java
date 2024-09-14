@@ -28,7 +28,7 @@ public class DigikalaSearchResultExtractor implements ISearchResultExtractor<Dig
             for (JsonNode node : productsNode) {
                 DigikalaDTO dto = new DigikalaDTO();
                 try {
-                    dto.setId(node.path("id").asInt());
+                    dto.setId(node.path("id").asLong());
                     dto.setTitle(node.path("title_en").asText());
 
                     // دریافت URL تصویر

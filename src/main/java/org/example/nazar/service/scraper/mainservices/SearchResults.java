@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Component
 public class SearchResults {
@@ -44,6 +43,7 @@ public class SearchResults {
         SearchResponseDTO searchResponseDTO = new SearchResponseDTO();
         searchResponseDTO.setSiteType(siteType);
         searchResponseDTO.setBaseDTO((List<BaseDTO>) searchResults);
+        searchResponseDTO.setTypeName(productType);
         return searchResponseDTO;
     }
 

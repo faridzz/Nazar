@@ -6,6 +6,8 @@ import org.jsoup.nodes.Document;
 
 import java.util.List;
 
-public interface IReviewExtractor {
-    List<Review> extractReviews(Object doc, IDateReFormater dateReFormater);
+public interface IReviewExtractor<T, E> {
+    List<Review> extractReviews(T doc, IDateReFormater dateReFormater);
+
+    int findLastPageNumber(E data);
 }

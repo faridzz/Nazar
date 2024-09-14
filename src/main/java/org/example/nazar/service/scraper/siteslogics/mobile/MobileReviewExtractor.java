@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-class MobileReviewExtractor implements IReviewExtractor {
+class MobileReviewExtractor implements IReviewExtractor<Document, Document> {
     @Override
-    public List<Review> extractReviews(Object docObj, IDateReFormater dateReFormater) {
+    public List<Review> extractReviews(Document doc, IDateReFormater dateReFormater) {
         List<Review> reviews = new ArrayList<>();
-        Document doc = (Document) docObj;
         Elements commentElements = doc.select(".comment");
         for (Element commentElement : commentElements) {
             Element h3Tag = commentElement.selectFirst("h3");
@@ -55,6 +54,19 @@ class MobileReviewExtractor implements IReviewExtractor {
         }
         return reviews;
     }
-
+    @Override
+    public int findLastPageNumber(Document doc) {
+        Element userComment = doc.selectFirst(".user-comments");
+        if (userComment != null && userComment.selectFirst(".comment") != null) {
+            Element pagination = userComment.selectFirst(".pagination");
+            if (pagination != null) {
+                Elements paginationElements = pagination.select("a");
+                int numOfaTags = paginationElements.size();
+                Element aTagWithNumOfPages = paginationElements.get(numOfaTags - 2);
+                return Integer.parseInt(aTagWithNumOfPages.text());
+            }
+        }
+        return 1;
+    }
 
 }

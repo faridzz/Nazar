@@ -15,16 +15,16 @@ import java.util.List;
 
 
 @Component
-public class DigikalaReviewExtractor implements IReviewExtractor {
+public class DigikalaReviewExtractor implements IReviewExtractor<String, String> {
     @Override
-    public List<Review> extractReviews(Object doc, IDateReFormater dateReFormater) {
+    public List<Review> extractReviews(String response, IDateReFormater dateReFormater) {
         List<Review> reviewList = new LinkedList<>();
-        String response = (String) doc;
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode jsonNode = mapper.readTree(response);
             if (jsonNode.get("status").asInt() == 200) {
                 JsonNode comments = jsonNode.get("data").get("comments");
+                if (comments.isEmpty()) throw new EndOfReviewAPiException();
                 for (JsonNode comment : comments) {
                     List<Integer> jalaliDate = dateReFormater.dateSplitter(comment.get("created_at").asText());
                     LocalDate date = dateReFormater.reFormater(jalaliDate.get(0), jalaliDate.get(1), jalaliDate.get(2));
@@ -50,4 +50,25 @@ public class DigikalaReviewExtractor implements IReviewExtractor {
         }
 
     }
+
+    @Override
+    public int findLastPageNumber(String response) {
+
+        ObjectMapper mapper = new ObjectMapper();
+        int lastPageNumber;
+        try {
+            JsonNode jsonNode = mapper.readTree(response);
+            if (jsonNode.get("status").asInt() == 200) {
+                lastPageNumber = jsonNode.get("data").get("pager").get("total_pages").asInt();
+            } else {
+                throw new EndOfReviewAPiException();
+            }
+
+        } catch (Exception e) {
+            throw new EndOfReviewAPiException("error while extract digikala last page number");
+        }
+        return lastPageNumber;
+    }
 }
+
+

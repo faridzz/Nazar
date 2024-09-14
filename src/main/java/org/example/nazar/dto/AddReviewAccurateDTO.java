@@ -4,15 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.nazar.enums.SiteType;
 
-import java.util.List;
-
+@Setter
 @Getter
-public class SearchResponseDTO {
-    @Setter
+public class AddReviewAccurateDTO {
     private SiteType siteType;
     private String typeName;
-    @Setter
-    private List<BaseDTO> baseDTO;
+    private BaseDTO baseDTO;
 
     @Override
     public String toString() {
@@ -24,7 +21,5 @@ public class SearchResponseDTO {
     }
 
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName.toLowerCase().trim();
-    }
+
 }

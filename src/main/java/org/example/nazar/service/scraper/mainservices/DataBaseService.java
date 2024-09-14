@@ -10,6 +10,8 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -165,7 +167,10 @@ public class DataBaseService {
         } catch (Exception e) {
             throw new NotFoundException("Product not found", Product.class, productName);
         }
-
+        //Check if a review with the null created at and fix it
+        reviews.parallelStream().filter(review -> review.getCreatedAt() == null).forEach(review ->
+                review.setCreatedAt(LocalDate.now())
+        );
         // Generate hash IDs for each review in parallel
         reviews.parallelStream().forEach(Review::createHashId);
 
@@ -174,6 +179,7 @@ public class DataBaseService {
         if (site == null) {
             throw new NotFoundException("Site not found", Site.class, siteUrl);
         }
+
 
         // Save the reviews in bulk to the database
         reviewRepository.saveAll(reviews);

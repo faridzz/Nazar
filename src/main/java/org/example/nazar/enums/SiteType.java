@@ -14,8 +14,12 @@ public enum SiteType {
 
     public static SiteType getSiteType(String siteUrl) {
         return Arrays.stream(values())
-                .filter(siteType -> siteUrl.toLowerCase().equalsIgnoreCase(siteType.url))
+                .filter(siteType -> siteUrl.toLowerCase().toLowerCase().contains(siteType.url))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public String getUrl() {
+        return this.url;
     }
 }

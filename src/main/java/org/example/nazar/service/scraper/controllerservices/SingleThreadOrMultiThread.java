@@ -1,4 +1,4 @@
-package org.example.nazar.service.scraper.mainservices;
+package org.example.nazar.service.scraper.controllerservices;
 
 import org.example.nazar.dto.BaseDTO;
 import org.example.nazar.repository.ProductRepository;
@@ -7,7 +7,6 @@ import org.example.nazar.service.scraper.MultiThreadReviewAdder;
 import org.example.nazar.service.scraper.SingleThreadReviewAdder;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;

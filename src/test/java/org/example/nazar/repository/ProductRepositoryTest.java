@@ -78,11 +78,9 @@ class ProductRepositoryTest {
         product = productRepository.save(product);
 
         // Act & Assert - findByName
-        Optional<Product> foundProduct = productRepository.findByName(product.getName());
+        Product foundProduct = productRepository.findByName(product.getName());
         assertThat(foundProduct)
                 .as("Product with name '%s' should exist", product.getName())
-                .isPresent()
-                .get()
                 .extracting(Product::getName)
                 .as("Product name should be '%s'", product.getName())
                 .isEqualTo(product.getName());

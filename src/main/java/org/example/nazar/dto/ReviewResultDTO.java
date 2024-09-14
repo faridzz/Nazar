@@ -10,8 +10,26 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReviewResultDTO {
 
+    public ReviewResultDTO(String siteUrl, Long reviewsNumber, int duplicateCount) {
+        this.siteUrl = siteUrl;
+        this.reviewsNumber = reviewsNumber;
+        this.duplicateCount = duplicateCount;
+    }
+
+    private String siteUrl;
     private Long reviewsNumber;
     private int duplicateCount;
-    private String siteUrl;
+    private int throwableCount;
 
+    @Override
+    public String toString() {
+        return "ReviewResultDTO{" +
+                "siteUrl='" + siteUrl + '\'' +
+                ", reviewsNumber=" + reviewsNumber +
+                ", throwableCount=" + throwableCount +
+                ", duplicateCount=" + duplicateCount +
+                ", reviews added secusecfully =" + (reviewsNumber - throwableCount) +
+                '}';
+    }
 }
+

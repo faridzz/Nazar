@@ -1,4 +1,4 @@
-package org.example.nazar.service.scraper.mainservices;
+package org.example.nazar.service.scraper.controllerservices;
 
 import org.example.nazar.dto.BaseDTO;
 import org.example.nazar.enums.SiteType;

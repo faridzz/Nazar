@@ -1,6 +1,7 @@
 package org.example.nazar.dto;
 
 import lombok.*;
+import org.example.nazar.enums.SiteType;
 
 import java.util.Locale;
 
@@ -9,14 +10,12 @@ import java.util.Locale;
 @AllArgsConstructor
 public class AddReviewDTO {
 
-
-    String siteUrl;
+    @Getter
+    @Setter
+    SiteType siteType;
     String typeName;
     String productName;
 
-    public void setSiteUrl(String siteUrl) {
-        this.siteUrl = siteUrl.toLowerCase(Locale.ROOT).trim();
-    }
 
     public void setTypeName(String typeName) {
         this.typeName = typeName.toLowerCase(Locale.ROOT).trim();
@@ -24,10 +23,6 @@ public class AddReviewDTO {
 
     public void setProductName(String productName) {
         this.productName = productName.toLowerCase(Locale.ROOT).trim();
-    }
-
-    public String getSiteUrl() {
-        return siteUrl.trim().toLowerCase(Locale.ROOT);
     }
 
     public String getTypeName() {

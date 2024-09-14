@@ -17,8 +17,11 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.*;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,10 +29,10 @@ import java.util.regex.Pattern;
 @Slf4j
 public class DigikalaReviewsScraper implements IReviewsScraper<DigikalaDTO> {
     private final IHttpRequestSender get;
-    private final IReviewExtractor extractor;
+    private final IReviewExtractor<String, String> extractor;
     private final IDateReFormater dateReFormater;
 
-    public DigikalaReviewsScraper(IHttpRequestSender get, @Qualifier("digikalaReviewExtractor") IReviewExtractor extractor, @Qualifier("jalaliStringToGregorianDateDigikala") IDateReFormater dateReFormater) {
+    public DigikalaReviewsScraper(IHttpRequestSender get, @Qualifier("digikalaReviewExtractor") IReviewExtractor<String, String> extractor, @Qualifier("jalaliStringToGregorianDateDigikala") IDateReFormater dateReFormater) {
         this.get = get;
         this.extractor = extractor;
         this.dateReFormater = dateReFormater;
@@ -51,25 +54,70 @@ public class DigikalaReviewsScraper implements IReviewsScraper<DigikalaDTO> {
         }
     }
 
+
     @Override
-    public List<Review> getReviews(URL url) throws IOException, InterruptedException {
-        LinkedList<Review> reviewLinkedList = new LinkedList<>();
-        int count = 1;
-        while (true) {
-            String urlString = url + "/?page=" + count;
-            String response = get.sendRequest(urlString);
-            try {
-                List<Review> reviewList = extractor.extractReviews(response, dateReFormater);
-                if (reviewList.isEmpty()) break;
-                reviewLinkedList.addAll(reviewList);
-                count += 1;
-            } catch (EndOfReviewAPiException e) {
-                break;
-            }
+    public List<Review> getReviews(URL url) throws IOException, InterruptedException, ExecutionException {
+        ExecutorService ex = Executors.newFixedThreadPool(60);
+        int lastPageNum = getResponseOfFirstPage(url);
+        List<CompletableFuture<List<Review>>> completableFutures = new ArrayList<>();
+
+        // اجرای هم‌زمان درخواست‌ها برای هر صفحه
+        for (int num = 1; num <= lastPageNum; num++) {
+            int finalNum = num;
+            CompletableFuture<List<Review>> future = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return reviewExtractor(finalNum, url.toString());
+                } catch (IOException | InterruptedException e) {
+                    log.error("error while get response from : {}{}", finalNum, url, e);
+                    Thread.currentThread().interrupt();
+                    return new ArrayList<>();
+                }
+            }, ex);
+            completableFutures.add(future);
         }
-        return reviewLinkedList;
+
+        // استفاده از allOf برای جمع‌آوری همه CompletableFuture ها و تنظیم تایم‌اوت
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]))
+                .orTimeout(50, TimeUnit.SECONDS);
+
+        // جمع‌آوری نتایج پس از اتمام همه CompletableFuture ها یا در صورت تایم‌اوت
+        CompletableFuture<List<Review>> allReviewsFuture = allFutures
+                .thenApply(v -> {
+                    List<Review> allReviews = new LinkedList<>();
+                    for (CompletableFuture<List<Review>> future : completableFutures) {
+                        try {
+                            allReviews.addAll(future.get()); // ادغام نتایج
+                        } catch (InterruptedException | ExecutionException e) {
+                            Thread.currentThread().interrupt();
+                            log.error("error while add or get review list");
+                        }
+                    }
+                    return allReviews;
+                })
+                .exceptionally(e -> {
+                    log.error("Error occurred while fetching reviews or timeout reached", e);
+                    return new LinkedList<>(); // در صورت وقوع خطا یا تایم‌اوت، لیست خالی برمی‌گردد
+                });
+
+        List<Review> allReviews = allReviewsFuture.get(); // دریافت نتایج نهایی
+        ex.shutdown(); // بستن ExecutorService بعد از اتمام کار
+        return allReviews;
     }
 
+
+    private List<Review> reviewExtractor(int pageNumber, String url) throws IOException, InterruptedException {
+        String urlString = url + "/?page=" + pageNumber;
+        String response = get.sendRequest(urlString);
+        try {
+            List<Review> reviewList = extractor.extractReviews(response, dateReFormater);
+            if (reviewList.isEmpty()) {
+                return new ArrayList<>();
+            }
+            return reviewList;
+        } catch (EndOfReviewAPiException e) {
+            return new ArrayList<>();
+        }
+    }
 
     private static String extractIds(DigikalaDTO dto) {
         Pattern idPattern = Pattern.compile("dkp-(\\d+)/");
@@ -80,4 +128,12 @@ public class DigikalaReviewsScraper implements IReviewsScraper<DigikalaDTO> {
             throw new ScraperException("cnt find any id in this digikala product product data : " + dto);
         }
     }
+
+    private int getResponseOfFirstPage(URL url) throws IOException, InterruptedException {
+        String urlString = url + "/?page=" + 1;
+        String response = get.sendRequest(urlString);
+        return extractor.findLastPageNumber(response);
+    }
+
+
 }

@@ -5,7 +5,9 @@ import org.example.nazar.dto.BaseDTO;
 import org.example.nazar.dto.FullReviewDTO;
 
 import org.example.nazar.dto.ReviewResultDTO;
+import org.example.nazar.enums.SiteType;
 import org.example.nazar.exception.DuplicateHashIdException;
+import org.example.nazar.exception.NotFoundException;
 import org.example.nazar.model.Product;
 import org.example.nazar.model.ProductReview;
 import org.example.nazar.model.Review;
@@ -39,6 +41,8 @@ public class MultiThreadReviewAdder<T extends BaseDTO> implements IReviewAdder<T
         } catch (DuplicateHashIdException e) {
             throw new DuplicateHashIdException();
 
+        } catch (NotFoundException e) {
+            throw new NotFoundException(e.getMessage());
         } catch (Exception e) {
             log.error("Error adding review", e);
             throw new RuntimeException(e); // Wrapping exception into a runtime exception to handle it in the caller method
@@ -46,13 +50,15 @@ public class MultiThreadReviewAdder<T extends BaseDTO> implements IReviewAdder<T
     }
 
     @Override
-    public ReviewResultDTO addReviewsToDatabase(T baseDto, String siteUrl, String typeName) throws IOException, InterruptedException {
+    public ReviewResultDTO addReviewsToDatabase(T baseDto, SiteType siteType, String typeName) throws IOException, InterruptedException, ExecutionException {
         AtomicInteger duplicateCount = new AtomicInteger(0);
-        siteUrl = siteUrl.toLowerCase().trim();
+        AtomicInteger throwableCount = new AtomicInteger(0);
+        String siteUrl = siteType.getUrl();
         typeName = typeName.toLowerCase().trim();
-        Product product = dataBaseService.addProduct(((T) baseDto).getTitle(), typeName);
+        Product product = dataBaseService.addProduct((baseDto).getTitle(), typeName);
+        dataBaseService.addSite(siteType);
 
-        URL url = reviewsScraper.getUrlOfProduct((T) baseDto);
+        URL url = reviewsScraper.getUrlOfProduct(baseDto);
 
         List<Review> reviewList = new ArrayList<>(reviewsScraper.getReviews(url));
 
@@ -71,11 +77,10 @@ public class MultiThreadReviewAdder<T extends BaseDTO> implements IReviewAdder<T
                     try {
                         future.get();
                     } catch (ExecutionException e) {
+                        throwableCount.incrementAndGet();
                         Throwable cause = e.getCause();
                         if (cause instanceof DuplicateHashIdException) {
                             duplicateCount.incrementAndGet();
-                        } else {
-                            log.error("Unexpected error", cause);
                         }
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
@@ -83,6 +88,6 @@ public class MultiThreadReviewAdder<T extends BaseDTO> implements IReviewAdder<T
                     }
                 });
 
-        return new ReviewResultDTO((long) reviewList.size(), duplicateCount.get(), siteUrl);
+        return new ReviewResultDTO(siteUrl, (long) reviewList.size(), duplicateCount.get(), throwableCount.get());
     }
 }

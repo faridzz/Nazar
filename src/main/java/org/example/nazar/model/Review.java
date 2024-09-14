@@ -30,6 +30,7 @@ public class Review {
     @Size(max = 10000)
     private String content;
     @Column(name = "Created_at")
+    @Setter
     private LocalDate createdAt;
     @Setter
     @Column(name = "posted_at")

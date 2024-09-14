@@ -2,26 +2,18 @@ package org.example.nazar.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.nazar.dto.*;
-import org.example.nazar.enums.SiteType;
 import org.example.nazar.model.Product;
 import org.example.nazar.model.ProductReview;
 import org.example.nazar.model.Site;
 import org.example.nazar.model.Type;
-import org.example.nazar.service.scraper.IReviewAdder;
-import org.example.nazar.service.scraper.ISearchResultScarper;
 import org.example.nazar.service.scraper.mainservices.DataBaseService;
-import org.example.nazar.service.scraper.mainservices.SearchAndSaveFactory;
+import org.example.nazar.service.scraper.controllerservices.FindAndAddReviewToDatabase;
 import org.example.nazar.service.scraper.mainservices.SearchResults;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static org.example.nazar.util.stringbuilder.BuildStringForController.buildErrorResponse;
-import static org.example.nazar.util.stringbuilder.BuildStringForController.buildResultString;
 
 @Slf4j
 @RestController
@@ -31,19 +23,15 @@ public class ProductController {
 
     private final DataBaseService dataBaseService;
 
-    private final ISearchResultScarper iSearchResultScarper;
-    private final IReviewAdder iReviewAdder;
-    private final SearchAndSaveFactory searchAndSaveFactory;
-    private final SearchResults searchResults;
 
-    public ProductController(DataBaseService dataBaseService,
-                             @Qualifier("mobileSearchResultScarper") ISearchResultScarper iSearchResultScarper,
-                             @Qualifier("mobileMultiThreadReviewAdder") IReviewAdder iReviewAdder, SearchAndSaveFactory searchAndSaveFactory, SearchResults searchResults) {
+    private final SearchResults searchResults;
+    private final FindAndAddReviewToDatabase findAndAddReviewToDatabase;
+
+    public ProductController(DataBaseService dataBaseService
+            , SearchResults searchResults, FindAndAddReviewToDatabase findAndAddReviewToDatabase) {
         this.dataBaseService = dataBaseService;
-        this.iSearchResultScarper = iSearchResultScarper;
-        this.iReviewAdder = iReviewAdder;
-        this.searchAndSaveFactory = searchAndSaveFactory;
         this.searchResults = searchResults;
+        this.findAndAddReviewToDatabase = findAndAddReviewToDatabase;
     }
 
     @GetMapping
@@ -135,43 +123,24 @@ public class ProductController {
 
     }
 
-    /**
-     * اضافه کردن نظرات یک محصول تنها با نام دقیق اون محصول د
-     *
-     * @param addReviewDTO شامل اطلاعات نظر، نام محصول و آدرس سایت
-     * @return تعداد نظرات اضافه شده در صورت موفقیت، یا پیام خطا در صورت بروز مشکل
-     */
-
-    @PostMapping("/add/one")
-    public ResponseEntity<String> addReview(@RequestBody AddReviewDTO addReviewDTO) {
-        String productNameSearchInput = addReviewDTO.getProductName();
-        String productNameSearchResult = "";
-
-        try {
-            // دریافت لیست نتایج جستجو برای محصول مورد نظر
-            List<BaseDTO> listOfProductResults = iSearchResultScarper.getSearchResults(productNameSearchInput, addReviewDTO.getTypeName());
-            Optional<BaseDTO> bestResult = iSearchResultScarper.findBestResult(listOfProductResults);
-
-            if (bestResult.isPresent()) {
-                productNameSearchResult = bestResult.get().getTitle();
-                // دریافت و اضافه کردن نظرات
-                List<ReviewResultDTO> reviewResultDTOS = searchAndSaveFactory
-                        .getSiteName(List.of(SiteType.MOBILE.name()))
-                        .searchAndAddToDatabase(bestResult.get(), addReviewDTO.getSiteUrl(), addReviewDTO.getTypeName());
-
-                // ساختن نتیجه خروجی
-                String resultString = buildResultString(reviewResultDTOS, productNameSearchInput, productNameSearchResult);
-
-                return ResponseEntity.ok(resultString);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            log.error("Error adding review from specific site", e);
-            return buildErrorResponse(productNameSearchInput, productNameSearchResult, e);
+    @PostMapping("/add/one/accurate")
+    public ResponseEntity<String> addReviewAccurate(@RequestBody List<AddReviewAccurateDTO> addReviewAccurateDTOs) {
+        List<ReviewResultDTO> reviewResultDTOS = new ArrayList<>();
+        for (AddReviewAccurateDTO addReviewAccurateDTO : addReviewAccurateDTOs) {
+            reviewResultDTOS.add(findAndAddReviewToDatabase.findAccurately(addReviewAccurateDTO));
         }
+        return ResponseEntity.ok(reviewResultDTOS.toString());
+
     }
 
 
+    @PostMapping("/add/one/fast")
+    public ResponseEntity<String> addReviewDirectly(@RequestBody AddReviewDTO addReviewDTO) {
+
+        return findAndAddReviewToDatabase.addReviewDirectly(addReviewDTO);
+    }
 }
+
+
+
 

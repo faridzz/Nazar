@@ -55,6 +55,7 @@ public class MobileReviewsScraper implements IReviewsScraper<MobileDTO> {
 
     }
 
+
     @Override
     public List<Review> getReviews(URL url) {
         int numberOfThreads = 10;
@@ -65,7 +66,7 @@ public class MobileReviewsScraper implements IReviewsScraper<MobileDTO> {
 
         try {
             doc = pageFetcher.fetchPage(url);
-            pageNumber = getNumberOfPages(doc);
+            pageNumber = reviewExtractor.findLastPageNumber(doc);
         } catch (IOException e) {
             throw new ScraperException(("Error connecting to " + url), e);
         }
@@ -99,17 +100,5 @@ public class MobileReviewsScraper implements IReviewsScraper<MobileDTO> {
         return reviews;
     }
 
-    private Integer getNumberOfPages(Document doc) {
-        Element userComment = doc.selectFirst(".user-comments");
-        if (userComment != null && userComment.selectFirst(".comment") != null) {
-            Element pagination = userComment.selectFirst(".pagination");
-            if (pagination != null) {
-                Elements paginationElements = pagination.select("a");
-                int numOfaTags = paginationElements.size();
-                Element aTagWithNumOfPages = paginationElements.get(numOfaTags - 2);
-                return Integer.parseInt(aTagWithNumOfPages.text());
-            }
-        }
-        return 1;
-    }
+
 }
